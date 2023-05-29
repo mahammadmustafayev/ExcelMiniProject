@@ -3,11 +3,11 @@
 namespace ExcelMiniProject.Data.Models;
 public enum Report
 {
-    None = 0,
+    
     Segment = 1,
     Country = 2,
     Products = 3,
-    DiscontProduts = 4
+    ProdutsDiscont = 4
 }
 public class ExcelProps
 {

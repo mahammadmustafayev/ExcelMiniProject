@@ -87,3 +87,6 @@ C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\obj\Deb
 C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\obj\Debug\net7.0\ExcelMiniProject.pdb
 C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\obj\Debug\net7.0\ExcelMiniProject.genruntimeconfig.cache
 C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\obj\Debug\net7.0\ref\ExcelMiniProject.dll
+C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\bin\Debug\net7.0\Newtonsoft.Json.dll
+C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\bin\Debug\net7.0\SendGrid.dll
+C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\bin\Debug\net7.0\StarkbankEcdsa.dll

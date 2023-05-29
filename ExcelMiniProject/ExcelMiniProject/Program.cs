@@ -1,6 +1,9 @@
 
 using ExcelMiniProject.Data.DAL;
+using ExcelMiniProject.Utilities.Mail;
 using Microsoft.EntityFrameworkCore;
+using Newtonsoft.Json;
+using Newtonsoft.Json.Converters;
 using System.Text.Json.Serialization;
 
 namespace ExcelMiniProject
@@ -14,6 +17,9 @@ namespace ExcelMiniProject
             // Add services to the container.
 
             builder.Services.AddControllers();
+
+           
+
             builder.Services.AddControllers().AddJsonOptions(options =>
                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter()));
             builder.Services.AddDbContext<ExcelDbContext>(options =>
