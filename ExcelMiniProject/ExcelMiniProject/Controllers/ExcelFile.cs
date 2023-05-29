@@ -1,18 +1,8 @@
 ﻿using ExcelMiniProject.Data.DAL;
 using ExcelMiniProject.Data.Models;
 using ExcelMiniProject.Utilities.Extension;
-using ExcelMiniProject.Utilities.Mail;
 using Ganss.Excel;
-using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
-using System.Net.Mail;
-using System.Net;
-using SendGrid.Helpers.Mail;
-using SendGrid;
-using Newtonsoft.Json;
-using System.ComponentModel.DataAnnotations.Schema;
-using NPOI.SS.Formula.Functions;
-using System.Runtime.CompilerServices;
 using System.Text;
 
 namespace ExcelMiniProject.Controllers;
@@ -60,7 +50,7 @@ public class ExcelFile : ControllerBase
     [HttpGet]
     //2014-12-01 00:00:00.0000000
     //2013-11-01 00:00:00.0000000
-    public async Task<IActionResult> SendReport(Report report,[FromQuery] string[] AcceptorEmail, [FromQuery] DateTime EndDate,[FromQuery] DateTime StartDate)
+    public async Task<IActionResult> SendReport(Report report,[FromQuery] string[] AcceptorEmail, [FromQuery] DateTime StartDate,[FromQuery] DateTime EndDate)
     {
         
         if ( StartDate.CheckDate(EndDate) && AcceptorEmail.CheckEmail("code.edu.az"))
@@ -69,14 +59,24 @@ public class ExcelFile : ControllerBase
             {
                 case Report.Segment:
                 {
-                    foreach (var segment in _context.ExcelProps.GroupBy(e=>e.Segment))
-                    {
-                        var segmentQuery = segment.Where(d => d.Date > StartDate && d.Date < EndDate);
-                        var productCount=segmentQuery.Select(x=>x.Product).Count();
-                        var salesSum=segmentQuery.Sum(x=>x.Sales);
-                        var discountSum=segmentQuery.Sum(x=>x.Discounts);
-                        var profitSum=segmentQuery.Sum(x=>x.Profit);
-                        StringBuilder message=new StringBuilder();
+                        decimal ProductCount = 0;
+                        decimal SalesSum = 0;
+                        decimal DiscountSum = 0;
+                        decimal ProfitSum = 0;
+                        foreach (var segment in _context.ExcelProps.GroupBy(e=>e.Segment))
+                        {
+                        //var segmentQuery = segment.Where(d => d.Date > StartDate && d.Date < EndDate);
+                        decimal product= segment.Where(d => d.Date > StartDate && d.Date < EndDate).Select(x=>x.Product).Count();
+                        ProductCount+=product;
+                        decimal sales=     segment.Where(d => d.Date > StartDate && d.Date < EndDate).Sum(x=>x.Sales);
+                        SalesSum+=sales;
+                        decimal discount=  segment.Where(d => d.Date > StartDate && d.Date < EndDate).Sum(x=>x.Discounts);
+                        DiscountSum+=discount;
+                        decimal profit= (decimal)segment.Where(d => d.Date > StartDate && d.Date < EndDate).Sum(x=>x.Profit);
+                        ProfitSum+=profit;
+
+                    }
+                        StringBuilder message = new StringBuilder();
                         message.Append(
                             $"""
                                 <h1>
@@ -84,33 +84,40 @@ public class ExcelFile : ControllerBase
                                 </h1>
                                 <br>
                                 <b>  Product Count:</b>
-                                <span>{productCount}</span>
+                                <span>{ProductCount}</span>
                                 <hr>
                                 <b>  Sales Sum:</b>
-                                <span> $ {salesSum}</span>
+                                <span> $ {SalesSum}</span>
                                 <hr>
                                 <b>  Discount Sum:</b>
-                                <span>$ {discountSum}</span>
+                                <span>$ {DiscountSum}</span>
                                 <hr>
                                 <b>  Profit Sum:</b>
-                                <span>$ {profitSum}</span>
+                                <span>$ {ProfitSum}</span>
                                 <hr>
                                 <span>{EndDate} to {StartDate}</span>
                             """);
                         await AcceptorEmail.SendEmail(message.ToString());
-
-                    }
-                    break;
+                        break;
                 }
                 case Report.Country: 
                 {
-                     foreach (var segment in _context.ExcelProps.GroupBy(e => e.Country))
+                        decimal ProductCount = 0;
+                        decimal SalesSum = 0;
+                        decimal DiscountSum = 0;
+                        decimal ProfitSum = 0;
+                        foreach (var segment in _context.ExcelProps.GroupBy(e => e.Country))
                         {
-                            var segmentQuery = segment.Where(d => d.Date > StartDate && d.Date < EndDate);
-                            var productCount = segmentQuery.Select(x => x.Product).Count();
-                            var salesSum = segmentQuery.Sum(x => x.Sales);
-                            var discountSum = segmentQuery.Sum(x => x.Discounts);
-                            var profitSum = segmentQuery.Sum(x => x.Profit);
+                            //var segmentQuery = segment.Where(d => d.Date > StartDate && d.Date < EndDate);
+                            decimal product = segment.Where(d => d.Date > StartDate && d.Date < EndDate).Select(x => x.Product).Count();
+                            ProductCount+= product;
+                            decimal sales =    segment.Where(d => d.Date > StartDate && d.Date < EndDate).Sum(x => x.Sales);
+                            SalesSum+= sales;
+                            decimal discount = segment.Where(d => d.Date > StartDate && d.Date < EndDate).Sum(x => x.Discounts);
+                            DiscountSum+= discount;
+                            decimal profit =   (decimal)segment.Where(d => d.Date > StartDate && d.Date < EndDate).Sum(x => x.Profit);
+                            ProfitSum+= profit;
+                        }
                             StringBuilder message = new StringBuilder();
                             message.Append(
                                 $"""
@@ -119,33 +126,40 @@ public class ExcelFile : ControllerBase
                                 </h1>
                                 <br>
                                 <b>  Product Count:</b>
-                                <span>{productCount}</span>
+                                <span>{ProductCount}</span>
                                 <hr>
                                 <b>  Sales Sum:</b>
-                                <span> $ {salesSum}</span>
+                                <span> $ {SalesSum}</span>
                                 <hr>
                                 <b>  Discount Sum:</b>
-                                <span>$ {discountSum}</span>
+                                <span>$ {DiscountSum}</span>
                                 <hr>
                                 <b>  Profit Sum:</b>
-                                <span>$ {profitSum}</span>
+                                <span>$ {ProfitSum}</span>
                                 <hr>
                                 <span>{EndDate} to {StartDate}</span>
                             """);
                             await AcceptorEmail.SendEmail(message.ToString());
-
-                        }
                      break;
                 }
                 case Report.Products:
                 {
+                        decimal ProductCount = 0 ;
+                        decimal SalesSum = 0;
+                        decimal DiscountSum = 0;
+                        decimal ProfitSum = 0;
                      foreach (var segment in _context.ExcelProps.GroupBy(e => e.Product))
                         {
-                            var segmentQuery = segment.Where(d => d.Date > StartDate && d.Date < EndDate);
-                            var productCount = segmentQuery.Select(x => x.Product).Count();
-                            var salesSum = segmentQuery.Sum(x => x.Sales);
-                            var discountSum = segmentQuery.Sum(x => x.Discounts);
-                            var profitSum = segmentQuery.Sum(x => x.Profit);
+                            //var segmentQuery = segment.Where(d => d.Date > StartDate && d.Date < EndDate);
+                            decimal product = segment.Where(d => d.Date > StartDate && d.Date < EndDate).Select(x => x.Product).Count();
+                            ProductCount+= product;
+                            decimal sales = segment.Where(d => d.Date > StartDate && d.Date < EndDate).Sum(x => x.Sales);
+                            SalesSum+= sales;
+                            decimal discount = segment.Where(d => d.Date > StartDate && d.Date < EndDate).Sum(x => x.Discounts);
+                            DiscountSum+= discount;
+                            decimal profit = (decimal)segment.Where(d => d.Date > StartDate && d.Date < EndDate).Sum(x => x.Profit);
+                            ProfitSum+= profit;
+                        }
                             StringBuilder message = new StringBuilder();
                             message.Append(
                                 $"""
@@ -154,48 +168,48 @@ public class ExcelFile : ControllerBase
                                 </h1>
                                 <br>
                                 <b>  Product Count:</b>
-                                <span>{productCount}</span>
+                                <span>{ProductCount}</span>
                                 <hr>
                                 <b>  Sales Sum:</b>
-                                <span> $ {salesSum}</span>
+                                <span> $ {SalesSum}</span>
                                 <hr>
                                 <b>  Discount Sum:</b>
-                                <span>$ {discountSum}</span>
+                                <span>$ {DiscountSum}</span>
                                 <hr>
                                 <b>  Profit Sum:</b>
-                                <span>$ {profitSum}</span>
+                                <span>$ {ProfitSum}</span>
                                 <hr>
                                 <span>{EndDate} to {StartDate}</span>
                             """);
                             await AcceptorEmail.SendEmail(message.ToString());
-
-                        }
                      break;
                 }
                 case Report.ProdutsDiscont:
-                    {
+                {
+                        decimal Discountsum=0;
                         
                         foreach (var segment in _context.ExcelProps.GroupBy(e => e.Product))
                         {
-                            var segmentQuery = segment.Where(d => d.Date > StartDate && d.Date < EndDate);
-                            var checkDiscount = segmentQuery.Sum(x => (x.Discounts/x.Sales)*100);
+                            //var segmentQuery = segment.Where(d => d.Date > StartDate && d.Date < EndDate);
+                            decimal checkDiscount = (decimal)segment.Where(d => d.Date > StartDate && d.Date < EndDate).Sum(x => (x.Discounts/x.Sales)*100);
+                            Discountsum += checkDiscount;
                             
-                            StringBuilder message = new StringBuilder();
-                            message.Append(
-                                $"""
+                        }
+                        StringBuilder message = new StringBuilder();
+                        message.Append(
+                            $"""
                                     <h1>
                                     <b>{report}</b>
                                     </h1>
                                     <br>
                                     <hr>
                                     <b>  Products Discount:</b>
-                                    <span>{Math.Round(checkDiscount)} %</span>
+                                    <span>{Math.Round(Discountsum)} %</span>
                                     <br>
                                     <span>{EndDate} to {StartDate}</span>
                                 """);
-                            await AcceptorEmail.SendEmail(message.ToString());
-                        }
-                            break;
+                        await AcceptorEmail.SendEmail(message.ToString());
+                        break;
                     }
             }
             
