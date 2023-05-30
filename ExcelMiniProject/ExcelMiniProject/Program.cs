@@ -37,6 +37,7 @@ namespace ExcelMiniProject
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
+                builder.Configuration.AddUserSecrets<Program>().Build();
             }
 
             app.UseHttpsRedirection();

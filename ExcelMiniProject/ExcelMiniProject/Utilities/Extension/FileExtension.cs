@@ -46,11 +46,11 @@ public static class FileExtension
         return false;
     }
     public static  async Task  SendEmail(this string[] emails,string message)
-    {
+    { 
         foreach (var email in emails)
         {
-            var apiKey = EmailConfig.token;
-            var client = new SendGridClient(apiKey);
+            var key = EmailConfig.token;
+            var client = new SendGridClient(key);
             var from = new EmailAddress(EmailConfig.email, EmailConfig.name);
             var subject = "Excel Mail Project";
             var to = new EmailAddress(email);
