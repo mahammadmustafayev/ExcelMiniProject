@@ -7,12 +7,12 @@ namespace ExcelMiniProject.Utilities.Mail;
 public class EmailConfig
 {
     private readonly IConfiguration _configuration;
-    public static string token;
     public EmailConfig(IConfiguration configuration)
     {
         _configuration = configuration;
-        token = _configuration["apiKey"];
+        token = _configuration.GetValue<string>("apiKey");
     }
+    public static string token;
     public static string email = "mustafamehmed1251@gmail.com";
     public static string name = "Mahammad";
     //public static string token = new ConfigurationBuilder().AddUserSecrets<Program>().Build()["apiKey"];

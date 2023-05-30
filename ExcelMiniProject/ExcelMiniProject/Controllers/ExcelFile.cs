@@ -30,9 +30,9 @@ public class ExcelFile : ControllerBase
                 return StatusCode(StatusCodes.Status404NotFound, new { statuscode = 404, message = "This file type must be (xlsx or xls)" });
             }
            
-            //string path = @"C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\Files\";
-            string path = @"C:\Users\mahammadvm\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\Files\";
-            //path.DeleteFiles();
+            string path = @"C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\Files\";
+            //string path = @"C:\Users\mahammadvm\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\Files\";
+            path.DeleteFiles();
             string filePath = Path.Combine(path, formFile.FileName);
             using (FileStream stream = new FileStream(filePath, FileMode.Create))
             {
