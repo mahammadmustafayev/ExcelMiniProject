@@ -45,11 +45,14 @@ public static class FileExtension
         }
         return false;
     }
+
+    private static readonly IConfiguration _configuration;
     public static  async Task  SendEmail(this string[] emails,string message)
     { 
+        
         foreach (var email in emails)
         {
-            var key = EmailConfig.token;
+            var key = _configuration.GetSection("apiKey").Value;
             var client = new SendGridClient(key);
             var from = new EmailAddress(EmailConfig.email, EmailConfig.name);
             var subject = "Excel Mail Project";

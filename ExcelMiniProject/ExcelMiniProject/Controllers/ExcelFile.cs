@@ -12,9 +12,11 @@ namespace ExcelMiniProject.Controllers;
 public class ExcelFile : ControllerBase
 {
 	private readonly ExcelDbContext _context;
-	public ExcelFile(ExcelDbContext context)
+	private readonly IWebHostEnvironment _env;
+	public ExcelFile(ExcelDbContext context,IWebHostEnvironment env)
 	{
 		_context= context;
+        _env= env;
 	}
 	[HttpPost]
 	public IActionResult UploadData(IFormFile formFile)
@@ -29,9 +31,8 @@ public class ExcelFile : ControllerBase
             {
                 return StatusCode(StatusCodes.Status404NotFound, new { statuscode = 404, message = "This file type must be (xlsx or xls)" });
             }
-           
-            string path = @"C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\Files\";
-            //string path = @"C:\Users\mahammadvm\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\Files\";
+            string path = Path.Combine(_env.ContentRootPath,"Files");
+            
             path.DeleteFiles();
             string filePath = Path.Combine(path, formFile.FileName);
             using (FileStream stream = new FileStream(filePath, FileMode.Create))
