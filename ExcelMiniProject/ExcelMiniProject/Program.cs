@@ -13,6 +13,7 @@ namespace ExcelMiniProject
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
+            var mailApiKey = builder.Configuration["apiKey"];
 
             // Add services to the container.
 
@@ -31,13 +32,14 @@ namespace ExcelMiniProject
             builder.Services.AddSwaggerGen();
 
             var app = builder.Build();
+            
 
             // Configure the HTTP request pipeline.
             if (app.Environment.IsDevelopment())
             {
                 app.UseSwagger();
                 app.UseSwaggerUI();
-                builder.Configuration.AddUserSecrets<Program>().Build();
+                //builder.Configuration.AddUserSecrets<Program>();
             }
 
             app.UseHttpsRedirection();
@@ -50,6 +52,8 @@ namespace ExcelMiniProject
             {
                 endpoints.MapControllers();
             });
+
+            app.MapGet("/", () => mailApiKey);
 
             app.Run();
         }
