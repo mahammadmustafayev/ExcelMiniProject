@@ -13,10 +13,12 @@ public class ExcelFile : ControllerBase
 {
 	private readonly ExcelDbContext _context;
 	private readonly IWebHostEnvironment _env;
-	public ExcelFile(ExcelDbContext context,IWebHostEnvironment env)
+    private readonly IConfiguration _configuration;
+	public ExcelFile(ExcelDbContext context,IWebHostEnvironment env,IConfiguration configuration)
 	{
 		_context= context;
         _env= env;
+        _configuration= configuration;
 	}
 	[HttpPost]
 	public IActionResult UploadData(IFormFile formFile)
@@ -99,7 +101,7 @@ public class ExcelFile : ControllerBase
                                 <hr>
                                 <span>{EndDate} to {StartDate}</span>
                             """);
-                        await AcceptorEmail.SendEmail(message.ToString());
+                        await AcceptorEmail.SendEmail(message.ToString(), _configuration["apiKey"]);
                         break;
                 }
                 case Report.Country: 
@@ -141,7 +143,7 @@ public class ExcelFile : ControllerBase
                                 <hr>
                                 <span>{EndDate} to {StartDate}</span>
                             """);
-                            await AcceptorEmail.SendEmail(message.ToString());
+                            await AcceptorEmail.SendEmail(message.ToString(), _configuration["apiKey"]);
                      break;
                 }
                 case Report.Products:
@@ -183,7 +185,7 @@ public class ExcelFile : ControllerBase
                                 <hr>
                                 <span>{EndDate} to {StartDate}</span>
                             """);
-                            await AcceptorEmail.SendEmail(message.ToString());
+                            await AcceptorEmail.SendEmail(message.ToString(), _configuration["apiKey"]);
                      break;
                 }
                 case Report.ProdutsDiscont:
@@ -210,7 +212,7 @@ public class ExcelFile : ControllerBase
                                     <br>
                                     <span>{EndDate} to {StartDate}</span>
                                 """);
-                        await AcceptorEmail.SendEmail(message.ToString());
+                        await AcceptorEmail.SendEmail(message.ToString(), _configuration["apiKey"]);
                         break;
                     }
             }

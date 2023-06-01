@@ -47,12 +47,12 @@ public static class FileExtension
     }
 
     
-    public static  async Task  SendEmail(this string[] emails,string message)
+    public static  async Task  SendEmail(this string[] emails,string message,string tokenKey)
     { 
         
         foreach (var email in emails)
         {
-            var key = EmailConfig.token;
+            var key = tokenKey;
             var client = new SendGridClient(key);
             var from = new EmailAddress(EmailConfig.email, EmailConfig.name);
             var subject = "Excel Mail Project";

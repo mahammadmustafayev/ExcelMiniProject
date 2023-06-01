@@ -13,7 +13,7 @@ namespace ExcelMiniProject
         public static void Main(string[] args)
         {
             var builder = WebApplication.CreateBuilder(args);
-            var mailApiKey = builder.Configuration["apiKey"];
+            //var mailApiKey = builder.Configuration["apiKey"];
 
             // Add services to the container.
 
@@ -53,7 +53,7 @@ namespace ExcelMiniProject
                 endpoints.MapControllers();
             });
 
-            app.MapGet("/", () => mailApiKey);
+            //app.MapGet("/", () => mailApiKey);
 
             app.Run();
         }
