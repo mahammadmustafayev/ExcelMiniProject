@@ -2,7 +2,11 @@
 using ExcelMiniProject.Data.Models;
 using ExcelMiniProject.Utilities.Extension;
 using Ganss.Excel;
+using MailKit.Net.Smtp;
+using MailKit.Security;
 using Microsoft.AspNetCore.Mvc;
+using MimeKit;
+using MimeKit.Text;
 using System.Text;
 
 namespace ExcelMiniProject.Controllers;
@@ -14,14 +18,35 @@ public class ExcelFile : ControllerBase
 	private readonly ExcelDbContext _context;
 	private readonly IWebHostEnvironment _env;
     private readonly IConfiguration _configuration;
-	public ExcelFile(ExcelDbContext context,IWebHostEnvironment env,IConfiguration configuration)
+
+    public ExcelFile(ExcelDbContext context,IWebHostEnvironment env,IConfiguration configuration)
 	{
 		_context= context;
         _env= env;
         _configuration= configuration;
 	}
-	[HttpPost]
-	public IActionResult UploadData(IFormFile formFile)
+
+    private IActionResult SendEmail( string[] mails, string message)
+    {
+        foreach (var mail in mails)
+        {
+            var email = new MimeMessage();
+            email.From.Add(MailboxAddress.Parse(_configuration["mailName"]));
+            email.To.Add(MailboxAddress.Parse(mail));
+            email.Subject = "Excel Project";
+            email.Body = new TextPart(TextFormat.Html) { Text = message };
+            using (SmtpClient smtp = new())
+            {
+                smtp.Connect("smtp.office365.com", 587, SecureSocketOptions.StartTls);
+                smtp.Authenticate(_configuration["mailName"], _configuration["mailPassword"]);
+                smtp.Send(email);
+                smtp.Disconnect(true);
+            }
+        }
+        return NoContent();
+    }
+    [HttpPost]
+    public IActionResult UploadData(IFormFile formFile)
 	{
 		if (formFile != null)
 		{
@@ -83,25 +108,29 @@ public class ExcelFile : ControllerBase
                         StringBuilder message = new StringBuilder();
                         message.Append(
                             $"""
+                               <div style="border: 2px solid rgb(171, 171, 171);text-align: center;border-radius: 25px;">
                                 <h1>
-                                <b>{report}</b>
+                                   <b style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" >{report}</b>
                                 </h1>
                                 <br>
-                                <b>  Product Count:</b>
+                                <b style="font-size: 1.3rem;">  Product Count:</b>
                                 <span>{ProductCount}</span>
                                 <hr>
-                                <b>  Sales Sum:</b>
-                                <span> $ {SalesSum}</span>
+                                <b style="font-size: 1.3rem;">  Sales Sum:</b>
+                                <span>{SalesSum} $</span>
                                 <hr>
-                                <b>  Discount Sum:</b>
-                                <span>$ {DiscountSum}</span>
+                                <b style="font-size: 1.3rem;">  Discount Sum:</b>
+                                <span>{DiscountSum} $</span>
                                 <hr>
-                                <b>  Profit Sum:</b>
-                                <span>$ {ProfitSum}</span>
+                                <b style="font-size: 1.3rem;">  Profit Sum:</b>
+                                <span>{ProfitSum} $</span>
                                 <hr>
-                                <span>{EndDate} to {StartDate}</span>
+                                <span><b style="font-size: 1.1rem;">({EndDate})</b> To <b style="font-size: 1.1rem;">({StartDate})</b></span>
+
+                            </div>
                             """);
-                        await AcceptorEmail.SendEmail(message.ToString(), _configuration["apiKey"]);
+                        SendEmail(AcceptorEmail,message.ToString());
+                        //await AcceptorEmail.SendEmail(message.ToString(), senderName,mailKey);
                         break;
                 }
                 case Report.Country: 
@@ -125,26 +154,30 @@ public class ExcelFile : ControllerBase
                             StringBuilder message = new StringBuilder();
                             message.Append(
                                 $"""
+                                <div style="border: 2px solid rgb(171, 171, 171);text-align: center;border-radius: 25px;">
                                 <h1>
-                                <b>{report}</b>
+                                   <b style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" >{report}</b>
                                 </h1>
                                 <br>
-                                <b>  Product Count:</b>
+                                <b style="font-size: 1.3rem;">  Product Count:</b>
                                 <span>{ProductCount}</span>
                                 <hr>
-                                <b>  Sales Sum:</b>
-                                <span> $ {SalesSum}</span>
+                                <b style="font-size: 1.3rem;">  Sales Sum:</b>
+                                <span>{SalesSum} $</span>
                                 <hr>
-                                <b>  Discount Sum:</b>
-                                <span>$ {DiscountSum}</span>
+                                <b style="font-size: 1.3rem;">  Discount Sum:</b>
+                                <span>{DiscountSum} $</span>
                                 <hr>
-                                <b>  Profit Sum:</b>
-                                <span>$ {ProfitSum}</span>
+                                <b style="font-size: 1.3rem;">  Profit Sum:</b>
+                                <span>{ProfitSum} $</span>
                                 <hr>
-                                <span>{EndDate} to {StartDate}</span>
+                                <span><b style="font-size: 1.1rem;">({EndDate})</b> To <b style="font-size: 1.1rem;">({StartDate})</b></span>
+                            
+                            </div>
                             """);
-                            await AcceptorEmail.SendEmail(message.ToString(), _configuration["apiKey"]);
-                     break;
+                        SendEmail(AcceptorEmail, message.ToString());
+                        //await AcceptorEmail.SendEmail(message.ToString(), senderName, mailKey);
+                        break;
                 }
                 case Report.Products:
                 {
@@ -167,26 +200,30 @@ public class ExcelFile : ControllerBase
                             StringBuilder message = new StringBuilder();
                             message.Append(
                                 $"""
+                                <div style="border: 2px solid rgb(171, 171, 171);text-align: center;border-radius: 25px;">
                                 <h1>
-                                <b>{report}</b>
+                                   <b style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" >{report}</b>
                                 </h1>
                                 <br>
-                                <b>  Product Count:</b>
+                                <b style="font-size: 1.3rem;">  Product Count:</b>
                                 <span>{ProductCount}</span>
                                 <hr>
-                                <b>  Sales Sum:</b>
-                                <span> $ {SalesSum}</span>
+                                <b style="font-size: 1.3rem;">  Sales Sum:</b>
+                                <span>{SalesSum} $</span>
                                 <hr>
-                                <b>  Discount Sum:</b>
-                                <span>$ {DiscountSum}</span>
+                                <b style="font-size: 1.3rem;">  Discount Sum:</b>
+                                <span>{DiscountSum} $</span>
                                 <hr>
-                                <b>  Profit Sum:</b>
-                                <span>$ {ProfitSum}</span>
+                                <b style="font-size: 1.3rem;">  Profit Sum:</b>
+                                <span>{ProfitSum} $</span>
                                 <hr>
-                                <span>{EndDate} to {StartDate}</span>
+                                <span><b style="font-size: 1.1rem;">({EndDate})</b> To <b style="font-size: 1.1rem;">({StartDate})</b></span>
+                            
+                            </div>
                             """);
-                            await AcceptorEmail.SendEmail(message.ToString(), _configuration["apiKey"]);
-                     break;
+                        SendEmail(AcceptorEmail,message.ToString());
+                        //await AcceptorEmail.SendEmail(message.ToString(), senderName, mailKey);
+                        break;
                 }
                 case Report.ProdutsDiscont:
                 { 
@@ -202,17 +239,22 @@ public class ExcelFile : ControllerBase
                         StringBuilder message = new StringBuilder();
                         message.Append(
                             $"""
+                                    <div style="border: 2px solid rgb(171, 171, 171);text-align: center;border-radius: 25px;">
                                     <h1>
-                                    <b>{report}</b>
+                                       <b style="font-family: system-ui, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;" >{report}</b>
                                     </h1>
                                     <br>
                                     <hr>
-                                    <b>  Products Discount:</b>
-                                    <span>{Math.Round(Discountsum)} %</span>
+                                    <b style="font-size: 1.3rem;">  Products Discount:</b>
+                                    <span>{Discountsum} $</span>
                                     <br>
-                                    <span>{EndDate} to {StartDate}</span>
+                                    <hr>
+                                    <span><b style="font-size: 1.1rem;">({EndDate})</b> To <b style="font-size: 1.1rem;">({StartDate})</b></span>
+                                
+                                </div>
                                 """);
-                        await AcceptorEmail.SendEmail(message.ToString(), _configuration["apiKey"]);
+                        SendEmail(AcceptorEmail, message.ToString());
+                        //await AcceptorEmail.SendEmail(message.ToString(), senderName, mailKey);
                         break;
                     }
             }
@@ -224,4 +266,6 @@ public class ExcelFile : ControllerBase
         }
         return Ok("Correct");
     }
+
+    
 }

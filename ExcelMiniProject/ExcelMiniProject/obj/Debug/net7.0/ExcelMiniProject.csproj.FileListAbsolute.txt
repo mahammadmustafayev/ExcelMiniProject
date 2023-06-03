@@ -181,4 +181,6 @@ C:\Users\mahammadvm\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\o
 C:\Users\mahammadvm\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\obj\Debug\net7.0\ExcelMiniProject.pdb
 C:\Users\mahammadvm\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\obj\Debug\net7.0\ExcelMiniProject.genruntimeconfig.cache
 C:\Users\mahammadvm\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\obj\Debug\net7.0\ref\ExcelMiniProject.dll
-C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\bin\Debug\net7.0\input.json
+C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\bin\Debug\net7.0\BouncyCastle.Cryptography.dll
+C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\bin\Debug\net7.0\MailKit.dll
+C:\Users\acer\Desktop\ExcelMiniProject\ExcelMiniProject\ExcelMiniProject\bin\Debug\net7.0\MimeKit.dll

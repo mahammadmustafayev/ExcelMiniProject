@@ -1,8 +1,10 @@
-﻿using ExcelMiniProject.Utilities.Mail;
-using System.Net.Mail;
+﻿using System.Net.Mail;
 using System.Net;
 using SendGrid.Helpers.Mail;
 using SendGrid;
+using MimeKit;
+using MimeKit.Text;
+using MailKit.Security;
 
 namespace ExcelMiniProject.Utilities.Extension;
 
@@ -47,21 +49,6 @@ public static class FileExtension
     }
 
     
-    public static  async Task  SendEmail(this string[] emails,string message,string tokenKey)
-    { 
-        
-        foreach (var email in emails)
-        {
-            var key = tokenKey;
-            var client = new SendGridClient(key);
-            var from = new EmailAddress(EmailConfig.email, EmailConfig.name);
-            var subject = "Excel Mail Project";
-            var to = new EmailAddress(email);
-            var plainTextContent = " ";
-            var htmlContent = message;
-            var msg = MailHelper.CreateSingleEmail(from, to, subject, plainTextContent, htmlContent);
-            var response = await client.SendEmailAsync(msg);
-           
-        }
-    }
+    
+
 }

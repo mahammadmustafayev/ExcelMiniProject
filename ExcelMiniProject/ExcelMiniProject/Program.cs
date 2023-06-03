@@ -1,6 +1,6 @@
 
 using ExcelMiniProject.Data.DAL;
-using ExcelMiniProject.Utilities.Mail;
+
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
