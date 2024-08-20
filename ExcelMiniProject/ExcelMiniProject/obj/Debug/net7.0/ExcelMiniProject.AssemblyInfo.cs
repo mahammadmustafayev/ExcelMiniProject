@@ -15,7 +15,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("ExcelMiniProject")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+d9f78d1739c9c1e696211ed0ad5d88219f813905")]
 [assembly: System.Reflection.AssemblyProductAttribute("ExcelMiniProject")]
 [assembly: System.Reflection.AssemblyTitleAttribute("ExcelMiniProject")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

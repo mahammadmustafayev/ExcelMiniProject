@@ -77,12 +77,12 @@ public class ExcelFile : ControllerBase
 	}
 
     [HttpGet]
-    //2014-12-01 00:00:00.0000000
     //2013-11-01 00:00:00.0000000
+    //2014-12-01 00:00:00.0000000
     public async Task<IActionResult> SendReport(Report report,[FromQuery] string[] AcceptorEmail, [FromQuery] DateTime StartDate,[FromQuery] DateTime EndDate)
     {
         
-        if ( StartDate.CheckDate(EndDate) && AcceptorEmail.CheckEmail("code.edu.az"))
+        if ( StartDate.CheckDate(EndDate) && AcceptorEmail.CheckEmail("gmail.com"))
         {
             switch (report)
             {
