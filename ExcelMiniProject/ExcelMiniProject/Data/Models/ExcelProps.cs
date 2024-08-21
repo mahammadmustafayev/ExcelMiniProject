@@ -1,4 +1,5 @@
 ﻿using Ganss.Excel;
+using System.Text.Json.Serialization;
 
 namespace ExcelMiniProject.Data.Models;
 public enum Report
@@ -38,6 +39,7 @@ public class ExcelProps
     [Column("Profit", MappingDirections.ExcelToObject)]
     public decimal? Profit { get; set; }
     [Column("Date", MappingDirections.ExcelToObject)]
+    [JsonConverter(typeof(CustomDateTimeConverter))]
     public DateTime Date { get; set; }
 
 }

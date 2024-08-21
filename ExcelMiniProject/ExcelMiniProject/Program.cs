@@ -1,6 +1,6 @@
 
 using ExcelMiniProject.Data.DAL;
-
+using ExcelMiniProject.Data.Models;
 using Microsoft.EntityFrameworkCore;
 using Newtonsoft.Json;
 using Newtonsoft.Json.Converters;
@@ -17,7 +17,11 @@ namespace ExcelMiniProject
 
             // Add services to the container.
 
-            builder.Services.AddControllers();
+            builder.Services.AddControllers()
+                .AddJsonOptions(opt =>
+                {
+                    opt.JsonSerializerOptions.Converters.Add(new CustomDateTimeConverter());
+                });
 
            
 
